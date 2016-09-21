@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tcpsender;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,8 @@ public class TCPSender
     Socket sock;
     String ipAddress;
     int port;
+    PrintWriter out;
+    BufferedReader in;
     
     TCPSender(String ipAddr, int targetPort)
     {
@@ -44,7 +46,7 @@ public class TCPSender
         System.out.println("Writing every "+sleepTime+" ms");
         while (true)
         {
-            sender.Write("Testing testing 1-2-3\n");
+            sender.Write("www.google.com");
             sender.Read();
             
             Thread.sleep(sleepTime);
@@ -55,7 +57,7 @@ public class TCPSender
             }
         }
     }
-    boolean Connect()
+    boolean Connect() throws IOException
     {
         try {
             System.out.println("Connecting to "+ipAddress+":"+port);
@@ -71,17 +73,17 @@ public class TCPSender
             return false;
         }
         System.out.println("Connected");
+        out = new PrintWriter(sock.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
         return true;
     }
     void Write(String text) throws IOException
     {
-        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
         out.println(text);
         out.flush();
     }
     void Read() throws IOException
     {
-        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
    //   System.out.println("Making new buffered readerrr");
         if (!in.ready())
             return;
